@@ -9,7 +9,6 @@ function planetGeneration.generatePlanetTypes()
             newPlanet[var] = val
         end
         global.planetTypes[planetName] = newPlanet
-        
     end
 end
 function planetGeneration.generateBiomes()

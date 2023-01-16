@@ -6,7 +6,8 @@
         "radius":200,
         "orbitSpeed":0.05,
         "orbitAhead":0,
-        "orbitRadius":0
+        "orbitRadius":0,
+        "resources":{"minerals":0,"organics":0,"radioactive":900000000000}
         },
     "binaryCenter":{
         "variants":{
@@ -27,7 +28,8 @@
         "orbitSpeed":0.05,
         "orbitAhead":3,
         "orbitRadius":16,
-        "parentBody":"binaryCenter"
+        "parentBody":"binaryCenter",
+        "resources":{"minerals":0,"organics":0,"radioactive":90000000}
         },
     "binaryStar2":{
         "variants":{
@@ -37,7 +39,8 @@
         "parentBody":"binaryCenter",
         "orbitSpeed":0.05,
         "orbitAhead":0,
-        "orbitRadius":16
+        "orbitRadius":16,
+        "resources":{"minerals":0,"organics":0,"radioactive":9000000}
         },
     "earth":{
         "variants":{
@@ -48,7 +51,8 @@
         "orbitSpeed":0.05,
         "orbitAhead":0,
         "parentBody":"binaryCenter",
-        "orbitRadius":200
+        "orbitRadius":200,
+        "resources":{"minerals":500000,"organics":23000,"radioactive":9000}
         },
     "moon":{"variants":{
         "barrenmoon":{"devname":"barrenmoon","biomes":{"plains":10},"color":[0,0.8,0],"weight":100}
@@ -57,7 +61,8 @@
         "radius":3,
         "orbitAhead":0,
         "orbitRadius":30,
-        "orbitSpeed":0.2
+        "orbitSpeed":0.2,
+        "resources":{"minerals":100000,"organics":0,"radioactive":0}
     }
 
     }

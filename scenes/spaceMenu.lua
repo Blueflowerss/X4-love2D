@@ -5,6 +5,7 @@ require "scene"
 local reverseTable = functions.reverseTable
 local createAndInsertTable = functions.createAndInsertTable
 --Init
+local sqrt = math.sqrt
 local s = {}
 function s.load ()
   love.keyboard.setKeyRepeat(true)
@@ -12,7 +13,7 @@ function s.load ()
   space.viewingTime = timer
   space.offset = vector()
   space.zoom = 1
-  space.bodies = functions.generatePlanets(space.viewingUniverse)
+  
   updateSpaceMenu()
 end
 function updateSpaceMenu()
@@ -33,7 +34,6 @@ function s.draw()
     middleWidth = width/2,
     radius =  (height*width)/5000
   }
-  local currentPlanetPosition = pointOnACircle(space.bodies[planet].orbitRadius,space.centralCircle.middleHeight+space.offset.y,space.centralCircle.middleWidth+space.offset.x,0.0001*space.viewingTime*space.bodies[planet].orbitalSpeed)
   planetPositions = {}
   local bodyCount = 0
   for i,v in pairs(space.bodies) do
@@ -49,18 +49,18 @@ function s.draw()
       love.graphics.setColor(0.2,0.2,0.2)
     end
     --cycle 1 - draw all planets without parents
-    if v.parent == nil then
+    if v.parentBody == nil then
       -- draw orbit line
       drawToCanvas(renderStack,5)
       love.graphics.circle("line",(space.centralCircle.middleHeight+space.offset.x)*space.zoom,(space.centralCircle.middleWidth+space.offset.y)*space.zoom,(v.orbitRadius*space.centralCircle.radius/100)*space.zoom)
       -- find position on the orbit line
-      local point = pointOnACircle(v.orbitRadius*space.centralCircle.radius/100,space.centralCircle.middleHeight,space.centralCircle.middleWidth,0.0001*space.viewingTime*v.orbitalSpeed+planetType.orbitAhead)
+      local point = pointOnACircle(v.orbitRadius*space.centralCircle.radius/100,space.centralCircle.middleHeight,space.centralCircle.middleWidth,0.0001*space.viewingTime*v.orbitSpeed+planetType.orbitAhead)
       
       planetPositions[v.type] = point
       love.graphics.setColor(planetVariant.color)
       --draw planet
       drawToCanvas(renderStack,3)
-      love.graphics.circle("fill",(point.x+space.offset.x)*space.zoom,(point.y+space.offset.y)*space.zoom,v.planetSize*space.zoom)
+      love.graphics.circle("fill",(point.x+space.offset.x)*space.zoom,(point.y+space.offset.y)*space.zoom,v.radius*space.zoom)
       --decrement parentless bodies
       bodyCount = bodyCount - 1
     else
@@ -74,12 +74,12 @@ function s.draw()
     while count <= bodyCount do
       for i,planet in pairs(parentalBodies) do
         local planetType = space.bodies[planet]
-        local parentPlanet = space.bodies[planetType.parent]
+        local parentPlanet = space.bodies[planetType.parentBody]
         if planetPositions[planet] then
           count = count + 1
         elseif planetPositions[parentPlanet.type] then
           local parentPosition = planetPositions[parentPlanet.type]
-          local point = pointOnACircle(planetType.orbitRadius,parentPosition.x,parentPosition.y,0.0001*space.viewingTime*planetType.orbitalSpeed+planetType.orbitalAhead)
+          local point = pointOnACircle(planetType.orbitRadius,parentPosition.x,parentPosition.y,0.0001*space.viewingTime*planetType.orbitSpeed+planetType.orbitAhead)
           planetPositions[planet] = point
         end
       end
@@ -87,13 +87,13 @@ function s.draw()
     for planetName,planetPosition in pairs(planetPositions) do
       local planetType = space.bodies[planetName]
       local planetVariant = global.planetTypes[planetType.type].variants[planetType.variant]
-      local parentPosition = planetPositions[planetType.parent]
-      if planetType.parent then
+      local parentPosition = planetPositions[planetType.parentBody]
+      if planetType.parentBody then
         drawToCanvas(renderStack,5)
         love.graphics.circle("line",(parentPosition.x+space.offset.x)*space.zoom,(parentPosition.y+space.offset.y)*space.zoom,planetType.orbitRadius*space.zoom)
         drawToCanvas(renderStack,3)
         love.graphics.setColor(planetVariant.color)
-        love.graphics.circle("fill",(planetPosition.x+space.offset.x)*space.zoom,(planetPosition.y+space.offset.y)*space.zoom,planetType.planetSize*space.zoom)
+        love.graphics.circle("fill",(planetPosition.x+space.offset.x)*space.zoom,(planetPosition.y+space.offset.y)*space.zoom,planetType.radius*space.zoom)
         love.graphics.setColor({1,1,1})
       end
     end
@@ -113,11 +113,12 @@ end
 
 function s.mousepressed(x,y,button,istouch,presses)
   if love.mouse.isDown(1) then
-    if space.viewingPlanet ~= nil then
-      for i,v in pairs(space.bodies) do
-        local mx,my = love.mouse.getPosition()
-        mx,my = (mx-space.offset.x*space.zoom)/space.zoom,(my-space.offset.y*space.zoom)/space.zoom 
-        
+    local mx,my = love.mouse.getPosition()
+    mx,my = (mx-space.offset.x*space.zoom)/space.zoom,(my-space.offset.y*space.zoom)/space.zoom 
+    for i,v in pairs(space.bodies) do
+      if sqrt(((planetPositions[v.type].x-mx)^2)+((planetPositions[v.type].y-my)^2)) < v.radius then
+        space.viewingPlanet = v.type
+        break
       end
     end
   end
@@ -147,7 +148,15 @@ end
 function s.update(dt)
   slab.Update(dt)
   local w,h = love.graphics.getDimensions()
-  manager(w/2,h/2)
+  for menuName,enabled in pairs(menusEnabled) do
+    if enabled then
+      menusFunc[menuName]()
+    end
+  end
+  if not paused then
+    space.viewingTime = space.viewingTime + 1 * space.timeMult
+    updateSpaceMenu()
+  end
 end
 --[[function s.quit()
     print "exiting..."

@@ -83,18 +83,12 @@ function functions.generatePlanets(seed,type)
     for planetName,planet in pairs(planetVariants) do
       weightedList[planetName] = planet.weight 
     end 
+    
     planet.variant = weighted_random(weightedList,seed)
-    planet.planetSize = v.radius
-    planet.orbitRadius = v.orbitRadius
-    planet.orbitalSpeed = v.orbitSpeed
-    planet.orbitalAhead = v.orbitAhead
-    planet.parent = v.parentBody
-    planet.connections = {}
-    planet.type = name
-    planet.chunks = {}
-    planet.actors = {}
-    planet.objects = {}
-    planet.collisionMap = {}
+    for var,val in pairs(v) do
+      planet[var] = val
+    end
+    planet["type"] = name
     bodies[planet.type] = planet
   end
   for name,v in pairs(bodies) do

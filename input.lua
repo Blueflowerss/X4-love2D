@@ -131,16 +131,25 @@ function SPACEMENU()
     space.zoom = space.zoom + 0.1
   end
   function timeforward()
-    space.viewingTime = space.viewingTime + 3600
-    updateSpaceMenu()
+    print(space.timeMult)
+    if space.timeMult * 2 < 8388608 then
+      space.timeMult = space.timeMult * 2
+    end
   end
   function timeback()
-    
-    space.viewingTime = functions.clamp(0,space.viewingTime - 3600,math.huge)
-    updateSpaceMenu()
+    if space.timeMult / 2 > 0.1 then
+      space.timeMult = space.timeMult / 2
+    end
+  end
+  function pause()
+    if paused then
+      paused = false
+    else
+      paused = true
+    end
   end
   local controls = {left=left,right=right,up=up,down=down,minus=minus,plus=plus,
-timeforward=timeforward,timeback=timeback}
+timeforward=timeforward,timeback=timeback,pause=pause}
 if keys[key] ~= nil then
     controls[keys[key]]()
   end

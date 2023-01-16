@@ -4,6 +4,9 @@ vector = require("vector")
 inspect = require("inspect")
 require "functions"
 require "input"
+stateMachine = require("knife.behavior")
+classObject = require("knife.base")
+timerObject = require("knife.timer")
 gamera = require("gamera")
 tick = require("tick")
 slab = require("Slab")

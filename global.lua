@@ -24,21 +24,30 @@ global.playerData = {
 global.chunkFiles = {}
 global.keyBindings = {["SPACEMENU"]={
   left="left",right="right",down="down",up="up",["kp+"]="plus",["kp-"]="minus",
-  [","]="timeback",["."]="timeforward"
+  [","]="timeback",["."]="timeforward",space="pause"
 }}
 interactionList = {door=0,sign=0,warp=0}
 space.viewingUniverse = 2200
 space.viewingPlanet = 1
-space.viewingTime = 1
+space.timeMult = 1
 space.offset = vector(0,0)
+space.planetFollowOffset = vector(0,0)
 space.zoom = 0
 space.centralCircle = {}
 space.dateString = ""
 space.bodies = {}
-afterPress = vector(0,0)
+menusEnabled = {}
+menusEnabled.manager = false
+menusEnabled.topBar = true
+menusEnabled.resources = false
+menusFunc = {}
+menusFunc.manager = manager
+menusFunc.topBar = menuBar
+menusFunc.resources = resourceManager
 function global.initializeGame()
   local playerData = love.filesystem.read("playerData.json")
   timer = 0
   planetGeneration.generatePlanetTypes()
   planetGeneration.generateBiomes()
+  space.bodies = functions.generatePlanets(space.viewingUniverse)
 end
