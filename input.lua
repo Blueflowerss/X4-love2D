@@ -132,7 +132,7 @@ function SPACEMENU()
   end
   function timeforward()
     print(space.timeMult)
-    if space.timeMult * 2 < 8388608 then
+    if space.timeMult * 2 < 8388 then
       space.timeMult = space.timeMult * 2
     end
   end

@@ -150,6 +150,7 @@ function s.keyreleased(key)
 
 end
 function s.update(dt)
+  deltatime = dt
   slab.Update(dt)
   local w,h = love.graphics.getDimensions()
   for menuName,enabled in pairs(menusEnabled) do
@@ -159,14 +160,15 @@ function s.update(dt)
   end
   if not paused then
     space.viewingTime = space.viewingTime + 1 * space.timeMult
-    local shipsToKeep = {}
     for i,v in pairs(ships) do
-      if not v.destroyed then
-        table.insert(shipsToKeep,v)
-        v:process()
+      if v.destroyed then
+        table.remove(ships,i)
       end
+        v:process()
     end
-    ships = shipsToKeep
+    for i,v in pairs(space.bodies) do
+      v:process()
+    end
     updateSpaceMenu()
   end
 end

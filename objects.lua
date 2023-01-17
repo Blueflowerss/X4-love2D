@@ -9,7 +9,6 @@ function shipObject:constructor(start,destination,objective,resources)
 	self.resources = resources
 	self.size = 1
 	self.destroyed = false
-	print("yes")
 end
 function shipObject:process()
 	print("noAction")
@@ -22,7 +21,14 @@ function cargoShip:process()
 		local direction = (planetPositions[self.destination]-self.position):norm()
 		self.position = self.position + direction * self.moveSpeed * space.timeMult
 	else
+		for i,v in pairs(self.resources) do
+			destination.resources[i] = destination.resources[i] + v
+		end
 		self.destroyed = true
 	end
 end
 shipTypes = {cargoShip=cargoShip}
+planetObject = classObject:extend()
+function planetObject:process()
+		timerObject.update(deltatime*space.timeMult,self.cargoTimer)
+end

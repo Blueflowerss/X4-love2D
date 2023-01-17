@@ -11,6 +11,7 @@ global.biomesIndexed = {}
 global.spriteDistancing = 128
 global.spriteScaling = 0.5
 global.gameScene = null
+deltatime = 0
 global.scenes = {
   GAMESCENE = "main",
   SPACEMENU = "spaceMenu"
@@ -66,12 +67,8 @@ function global.initializeGame()
     table.insert(events,message)
   end)
   eventObject.on("ship",function(start,destination,type,resources) 
-    if start ~=destination then
-      local ship = shipTypes[type](start,destination,type)
+      local ship = shipTypes[type](start,destination,type,resources)
       table.insert(ships,ship)
-    else
-      eventObject.dispatch("event","Destination can't be the same as the beginning.")
-    end
   end)
   space.bodies = functions.generatePlanets(space.viewingUniverse)
 end

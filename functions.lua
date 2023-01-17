@@ -70,14 +70,25 @@ function weighted_random (weights,seed)
       end
   end
 end
-
+function moveResourcesToCargoShip(start,destination,resources,takeAway)
+	if (resources.minerals-takeAway.minerals>=0) and
+	(resources.organics-takeAway.organics>=0) and
+	(resources.radioactive-takeAway.radioactive>=0) then
+    resources.minerals= resources.minerals - takeAway.minerals
+    resources.organics= resources.organics - takeAway.organics
+    resources.radioactive= resources.radioactive - takeAway.radioactive
+    eventObject.dispatch("ship",start,destination,"cargoShip",{minerals=takeAway.minerals,organics=takeAway.organics,radioactive=takeAway.radioactive})
+  else 
+		eventObject.dispatch("event",start..": insufficient resources to send.")
+	end
+end
 function functions.generatePlanets(seed,type)
   type = type or "all"
   local bodies = {}
   local orbitRadius = 1
   local planetRelations = {}
   for name,v in pairs(global.planetTypes) do
-    local planet = {}
+    local planet = planetObject()
     local planetVariants = v.variants
     local weightedList = {}
     for planetName,planet in pairs(planetVariants) do
@@ -85,6 +96,12 @@ function functions.generatePlanets(seed,type)
     end 
     
     planet.variant = weighted_random(weightedList,seed)
+    planet.autoSend = false
+    planet.autoMineralAmount = 0
+    planet.autoOrganicAmount = 0
+    planet.autoRadioactiveAmount = 0
+    planet.cargoDestination = ""
+    planet.cargoTimer = {}
     for var,val in pairs(v) do
       planet[var] = val
     end
