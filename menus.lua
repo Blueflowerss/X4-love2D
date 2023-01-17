@@ -89,9 +89,9 @@ end
 slab.SameLine()
 if slab.Button('send resources') then
 	local sourcePlanet = space.bodies[space.viewingPlanet]
-	if (sourcePlanet.resources.minerals-menus.mineralAmount>0) and
-	(sourcePlanet.resources.organics-menus.organicAmount>0) and
-	(sourcePlanet.resources.radioactive-menus.radioactiveAmount>0) then
+	if (sourcePlanet.resources.minerals-menus.mineralAmount>=0) and
+	(sourcePlanet.resources.organics-menus.organicAmount>=0) and
+	(sourcePlanet.resources.radioactive-menus.radioactiveAmount>=0) then
 		sourcePlanet.resources.minerals= sourcePlanet.resources.minerals - menus.mineralAmount
 		sourcePlanet.resources.organics= sourcePlanet.resources.organics - menus.organicAmount
 		sourcePlanet.resources.radioactive= sourcePlanet.resources.radioactive - menus.radioactiveAmount

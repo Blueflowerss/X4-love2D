@@ -9,7 +9,7 @@ function shipObject:constructor(start,destination,objective,resources)
 	self.resources = resources
 	self.size = 1
 	self.destroyed = false
-	print(self.resources)
+	print("yes")
 end
 function shipObject:process()
 	print("noAction")
