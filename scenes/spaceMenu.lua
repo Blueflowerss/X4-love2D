@@ -39,6 +39,10 @@ function s.draw()
   for i,v in pairs(space.bodies) do
     bodyCount = bodyCount + 1
   end
+  for i,v in pairs(ships) do
+    drawToCanvas(renderStack,10)
+    love.graphics.circle("fill",(v.position.x+space.offset.x)*space.zoom,(v.position.y+space.offset.y)*space.zoom,v.size*space.zoom)
+  end
   local parentalBodies = {}
   for i,v in pairs(space.bodies) do
     local planetVariant = global.planetTypes[v.type].variants[v.variant]
@@ -155,6 +159,14 @@ function s.update(dt)
   end
   if not paused then
     space.viewingTime = space.viewingTime + 1 * space.timeMult
+    local shipsToKeep = {}
+    for i,v in pairs(ships) do
+      if not v.destroyed then
+        table.insert(shipsToKeep,v)
+        v:process()
+      end
+    end
+    ships = shipsToKeep
     updateSpaceMenu()
   end
 end

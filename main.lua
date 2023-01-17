@@ -6,7 +6,9 @@ require "functions"
 require "input"
 stateMachine = require("knife.behavior")
 classObject = require("knife.base")
+eventObject = require("knife.event")
 timerObject = require("knife.timer")
+require "objects"
 gamera = require("gamera")
 tick = require("tick")
 slab = require("Slab")

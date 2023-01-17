@@ -36,11 +36,21 @@ space.zoom = 0
 space.centralCircle = {}
 space.dateString = ""
 space.bodies = {}
+menus = {}
+menus.mineralAmount = 0
+menus.organicAmount = 0
+menus.radioactiveAmount = 0
+menus.selectedPlanet = "earth"
+events = {}
+ships = {}
 menusEnabled = {}
+menusEnabled.events = false
 menusEnabled.manager = false
 menusEnabled.topBar = true
 menusEnabled.resources = false
+
 menusFunc = {}
+menusFunc.events = eventMenu
 menusFunc.manager = manager
 menusFunc.topBar = menuBar
 menusFunc.resources = resourceManager
@@ -49,5 +59,19 @@ function global.initializeGame()
   timer = 0
   planetGeneration.generatePlanetTypes()
   planetGeneration.generateBiomes()
+  eventObject.on("event",function(message) 
+    if table.length(events) > 30 then
+      table.remove(events,#events)
+    end
+    table.insert(events,message)
+  end)
+  eventObject.on("ship",function(start,destination,type,resources) 
+    if start ~=destination then
+      local ship = shipTypes[type](start,destination,type)
+      table.insert(ships,ship)
+    else
+      eventObject.dispatch("event","Destination can't be the same as the beginning.")
+    end
+  end)
   space.bodies = functions.generatePlanets(space.viewingUniverse)
 end
